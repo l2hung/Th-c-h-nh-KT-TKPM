@@ -1,4 +1,4 @@
-package StrategyPattern;
+package lab5.lehuyhung21066381.StrategyPattern;
 import java.util.Scanner;
 
 public class Main {

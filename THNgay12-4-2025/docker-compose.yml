@@ -1,0 +1,71 @@
+version: '3.8'
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "${API_GATEWAY_PORT}:3004"
+    depends_on:
+      - customer-service
+      - order-service
+      - product-service
+    environment:
+      - CUSTOMER_SERVICE_URL=http://customer-service:8001
+      - ORDER_SERVICE_URL=http://order-service:8002
+      - PRODUCT_SERVICE_URL=http://product-service:8003
+
+  customer-service:
+    build:
+      context: ./customer-service
+    ports:
+      - "8001:8001"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: customer_service
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    depends_on:
+      - postgres
+
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "8002:8002"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: order_service
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    depends_on:
+      - postgres
+
+  product-service:
+    build:
+      context: ./product-service
+    ports:
+      - "8003:8003"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: product_service
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
